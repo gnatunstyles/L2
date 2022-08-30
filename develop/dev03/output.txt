@@ -1,0 +1,11 @@
+drwxr-xr-x 3 ignazio ignazio 4096 May 11 13:53 backups
+drwxr-xr-x 2 ignazio ignazio 4096 May 4 13:16 db
+drwxr-xr-x 2 ignazio ignazio 4096 Jun 3 20:16 cmd
+-rw-r--r-- 1 ignazio ignazio 1565959 May 28 22:07 decimated_points_vox.las
+-rw-r--r-- 1 ignazio ignazio 1565959 May 29 01:50 decimated_points_random.las
+-rw-r--r-- 1 ignazio ignazio 21797235 May 29 17:08 cloud_vox.las
+-rw-r--r-- 1 ignazio ignazio 363821295 May 28 15:49 NZ19_Wellington.las
+-rw-r--r-- 1 ignazio ignazio 21900 Jun 29 19:48 go.sum
+-rw-r--r-- 1 ignazio ignazio 1187 Jun 29 19:48 go.mod
+-rw-r--r-- 1 ignazio ignazio 1565959 May 28 20:15 decimated_points.las
+-rw-r--r-- 1 ignazio ignazio 185075623 May 11 13:13 cloud.las
