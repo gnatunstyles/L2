@@ -3,6 +3,7 @@ package main
 import (
 	"dev11/internal/api"
 	"dev11/internal/config"
+	"log"
 
 	"net/http"
 )
@@ -52,15 +53,18 @@ Web-сервер должен запускаться на порту указа�
 
 func main() {
 	cfg := config.New()
-	handler := api.NewHandler().RouteInit()
+	mux := http.NewServeMux()
+	handler := api.NewHandler()
+	handler.RouteInit(mux)
+
 	srv := http.Server{
 		Addr:    cfg.Address,
-		Handler: handler,
+		Handler: mux,
 	}
+	log.Printf("Server is listening on: %s\n", srv.Addr)
 
 	err := srv.ListenAndServe()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-
 }
