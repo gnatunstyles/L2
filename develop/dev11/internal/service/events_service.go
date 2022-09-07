@@ -17,11 +17,11 @@ type EventsDB struct {
 	db map[string]models.Event
 }
 
-// func hash(s string) uint32 {
-// 	h := fnv.New32a()
-// 	h.Write([]byte(s))
-// 	return h.Sum32()
-// }
+func New() *EventsDB {
+	return &EventsDB{
+		db: make(map[string]models.Event),
+	}
+}
 
 func (e *EventsDB) CreateEvent(event *models.Event) error {
 	saveId := fmt.Sprintf("%d:%d", event.UserID, event.EventID)
@@ -41,9 +41,14 @@ func (e *EventsDB) UpdateEvent(userID, eventID int, newEvent *models.Event) erro
 		return fmt.Errorf("error: event with this ID does not exist")
 	}
 }
-func (e *EventsDB) DeleteEvent(userID, eventID int) {
+func (e *EventsDB) DeleteEvent(userID, eventID int) error {
 	saveId := fmt.Sprintf("%d:%d", userID, eventID)
-	delete(e.db, saveId)
+	if _, ok := e.db[saveId]; ok {
+		delete(e.db, saveId)
+		return nil
+	} else {
+		return fmt.Errorf("error: event with this ID does not exist")
+	}
 }
 
 func (e *EventsDB) EventsForDay(userId string, day time.Time) ([]models.Event, error) {

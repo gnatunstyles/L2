@@ -6,6 +6,6 @@ type Config struct {
 
 func New() *Config {
 	var c Config
-	c.Address = ":8080"
+	c.Address = "localhost:8080"
 	return &c
 }

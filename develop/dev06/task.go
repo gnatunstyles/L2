@@ -70,26 +70,95 @@ func getArgs() (*args, error) {
 	return args, nil
 }
 
-func fileInit(args *args) ([]string, error) {
-	var res []string
-	filename := args.file
-	f, err := os.Open(filename)
+// readFile - reads file line by line
+func readFile(filename string) ([]string, error) {
+	var lines []string
+
+	file, err := os.Open(filename)
 	if err != nil {
-		return []string{}, err
+		return nil, err
 	}
-	defer f.Close()
-	s := bufio.NewScanner(f)
-	for s.Scan() {
-		line := s.Text()
-		res = append(res, line)
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
 	}
-	return res, nil
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+	return lines, nil
 }
 
-func fields()    {}
-func delimeter() {}
-func separated() {}
+// cutLines - cut lines by specified args
+func cutLines(args *args, lines []string) []string {
+	delimiter := "\t"
+
+	if args.d != delimiter {
+		delimiter = args.d
+	}
+
+	var result []string
+
+	for _, line := range lines {
+		if delimiter != "" && strings.Contains(line, delimiter) {
+			words := strings.Split(line, delimiter)
+
+			cutLine := strings.Builder{}
+
+			for _, val := range args.f {
+				if len(words) >= val {
+					cutLine.WriteString(words[val-1])
+					cutLine.WriteString(delimiter)
+				}
+			}
+
+			// trim extra delimiter
+			result = append(result, strings.TrimSuffix(cutLine.String(), delimiter))
+
+		} else if !args.s {
+			result = append(result, line)
+		}
+	}
+
+	return result
+}
+
+// cut - works like linux cut with flags:
+// -f -s -d
+func cut() ([]string, error) {
+	if len(os.Args) < 4 {
+		return nil, errors.New("not enougth elements")
+	}
+
+	var result []string
+
+	args, err := getArgs()
+	if err != nil {
+		return nil, err
+	}
+
+	lines, err := readFile(args.file)
+	if err != nil {
+		return nil, err
+	}
+
+	cutLines := cutLines(args, lines)
+	result = append(result, cutLines...)
+
+	return result, nil
+}
 
 func main() {
 
+	lines, err := cut()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	for i := range lines {
+		fmt.Println(lines[i])
+	}
 }
